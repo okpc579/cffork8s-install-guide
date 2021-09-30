@@ -20,7 +20,7 @@
   　2.8.1 [AWS](#2.8.1)  
   　2.8.2 [Openstack](#2.8.2)  
   2.9. [Kubernetes Cluster 사용 설정 & 설치 확인](#2.9)  
-    [※ (참고) Kubespray 사용 Kubernetes Cluster 삭제](#2.※)  
+    ※ [(참고) Kubespray 사용 Kubernetes Cluster 삭제](#2.※)  
 
 3. [cf-for-k8s 설치](#3)  
   3.1. [실행파일 소개](#3.1)  
