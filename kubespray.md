@@ -392,6 +392,7 @@ external_openstack_lbaas_internal_lb: false
 ...
 ```
 <br>
+  
 ### <div id='2.8'> 2.8. Kuberspray를 통한 Kubernetes Cluster 구성
 #### <div id='2.8.1'> 2.8.1. AWS
 
