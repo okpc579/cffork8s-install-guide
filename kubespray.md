@@ -551,7 +551,7 @@ $ ansible-playbook -i inventory/mycluster/hosts.yaml  --become --become-user=roo
 | utils-install.sh | cf-for-k8s 설치 & 활용 시 사용되는 툴 설치 스크립트 | ytt, kapp, bosh cli, cf cli 설치 |
 | variables.yml | cf-for-k8s 설치 시 적용하는 변수 설정 파일 ||
 | 1.storageclass-config.sh | cf-for-k8s 설치 시 사용 할 Storageclass를 default로 정의하는 스크립트 ||
-| 2.create-variables.sh | cf-for-k8s 설치 시 사용 할 비밀번호, certificate등의 설정을 갖고있는 Manifest를 생성하는 스크립트 ||
+| 2.generate-values.sh | cf-for-k8s 설치 시 사용 할 비밀번호, certificate등의 설정을 갖고있는 Manifest를 생성하는 스크립트 ||
 | 3.rendering-values.sh | 비밀번호, certificate등의 설정을 갖고있는 Manifest를 활용해 YAML을 생성하는 스크립트 ||
 | 4.deploy-cffork8s.sh | 생성된 YAML을 이용하여 cf-for-k8s를 설치하는 스크립트 ||
 | delete-cffork8s.sh | cf-for-k8s를 삭제하는 스크립트 ||
