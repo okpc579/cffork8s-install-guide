@@ -565,6 +565,7 @@ $ ansible-playbook -i inventory/mycluster/hosts.yaml  --become --become-user=roo
 
 - git clone 명령을 통해 다음 경로에서 cf-for-k8s 다운로드를 진행한다. 본 설치 가이드에서의 cf-for-k8s의 버전은 v#.#.#이다. ## 수정필요
 ```
+$ cd $HOME
 $ git clone ~~~~.git -b ~~~
 $ cd ~~~~~~~
 ```
@@ -625,7 +626,7 @@ external_uaa_db_id=uaa                                      # UAA DB ID
 external_uaa_db_password=uaa_admin                          # UAA DB Password
 external_uaa_db_name=uaa                                    # UAA DB Name
 external_db_cert_path=support-files/db.ca                   # if DB use cert --> add the contents of the db.ca file
-                                                            # if DB don't use cert --> db.ca is empt
+                                                            # if DB don't use cert --> db.ca is empty
 ```
 - 주요 변수의 설명은 다음과 같다.
 
