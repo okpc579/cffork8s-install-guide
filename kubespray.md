@@ -20,7 +20,7 @@
   　2.8.1 [AWS](#2.8.1)  
   　2.8.2 [Openstack](#2.8.2)  
   2.9. [Kubernetes Cluster 사용 설정 & 설치 확인](#2.9)  
-    ※ [(참고) Kubespray 사용 Kubernetes Cluster 삭제](#2.※)  
+    ※ [(참고) Kubespray 사용 Kubernetes Cluster 삭제](#2.9.1)  
 
 3. [cf-for-k8s 설치](#3)  
   3.1. [실행파일 소개](#3.1)  
@@ -30,8 +30,8 @@
   3.5. [cf-for-k8s values 생성](#3.5)  
   3.6. [cf-for-k8s 배포 YAML 생성](#3.6)  
   3.7. [cf-for-k8s 설치](#3.7)  
-  3.8. [cf-for-k8s 도메인 설정 (넣어야 할까?)](#3.8)  
-  3.9. [cf-for-k8s 로그인 및 테스트 앱 배포](#3.9)  
+  　※ [cf-for-k8s 도메인 설정 (넣어야 할까?)](#3.7.1)  
+  3.8. [cf-for-k8s 로그인 및 테스트 앱 배포](#3.8)  
 
 ## <div id='1'> 1. 문서 개요
 ### <div id='1.1'> 1.1. 목적
@@ -392,7 +392,7 @@ external_openstack_lbaas_internal_lb: false
 ...
 ```
 <br>
-  
+
 ### <div id='2.8'> 2.8. Kuberspray를 통한 Kubernetes Cluster 구성
 #### <div id='2.8.1'> 2.8.1. AWS
 
@@ -517,7 +517,7 @@ snapshot-controller-0                         1/1     Running   0          7m33s
 
 <br>
 
-### <div id='2.※'> ※ (참고) Kubespray 사용 Kubernetes Cluster 삭제
+#### <div id='2.9.1'> ※ (참고) Kubespray 사용 Kubernetes Cluster 삭제
 Ansible playbook을 이용하여 Kubespray 삭제를 진행한다.
 
 ```
@@ -584,17 +584,19 @@ $ vi variables.yml ## 수정필요
 
 ## COMMON VARIABLE
 iaas=aws                                                    # IaaS (e.g. aws or openstack)
-system_domain=galaxycloud.shop                              # cffork8s system_domain
-public_ip=3.3.3.3                                           # LoadbalancerIP (PublicIP associcated with system_domain)
-storageclass_name=cinder-csi                                # Storage Class Name ($ kubectl get sc)
+system_domain=cffork8s.com                                  # cffork8s system_domain (e.g. 3.35.135.135.nip.io)
+use_lb=true                                                 # (e.g. true or false)
+public_ip=3.35.135.135                                      # LoadbalancerIP (PublicIP associcated with system_domain, if use openstack)
+storageclass_name=ebs-sc                                    # Storage Class Name ($ kubectl get sc) (e.g. ebs-sc[use aws] || cinder-csi[use openstack])
+
 
 ## APP_REGISTRY VARIABLE
 app_registry_kind=dockerhub                                 # Registry Kind (e.g. dockerhub or private)
-app_registry_repository=admin                               # Repository Name
-app_registry_id=admin                                       # Registry ID
-app_registry_password=adminpw                               # Registry Password
-app_registry_address=3.3.3.4.nip.io                         # if app_registry_kind==private, fill in app_registry_address
+app_registry_repository=repository_name                     # Repository Name
+app_registry_id=registry_id                                 # Registry ID
+app_registry_password=registry_password                     # Registry Password
 
+app_registry_address=harbor00.nip.io                        # if app_registry_kind==private, fill in app_registry_address
 is_self_signed_certificate=false                            # is private registry use self-signed certificate? (e.g. true or false)
 app_registry_cert_path=support-files/private-repository.ca  # if is_self_signed_certificate==true --> add the contents of the private-repository.ca file
                                                             # if is_self_signed_certificate==false --> private-repository.ca is empty
@@ -610,6 +612,7 @@ external_blobstore_droplet_directory=cc-droplet             # Blobstore Droplet 
 external_blobstore_resource_directory=cc-resource           # Blobstore Resource Directory
 external_blobstore_buildpack_directory=cc-buildpack         # Blobstore Buildpack Directory
 
+
 ## EXTERNAL DB VARIABLE (Option)
 use_external_db=false                                       # (e.g. true or false)
 external_db_kind=postgres                                   # External DB Kind(e.g. postgres or mysql)
@@ -622,11 +625,7 @@ external_uaa_db_id=uaa                                      # UAA DB ID
 external_uaa_db_password=uaa_admin                          # UAA DB Password
 external_uaa_db_name=uaa                                    # UAA DB Name
 external_db_cert_path=support-files/db.ca                   # if DB use cert --> add the contents of the db.ca file
-                                                            # if DB don't use cert --> db.ca is empty
-
-## MetalLB DB VARIABLE (Option)
-use_metallb=false                                           # (e.g. true or false)
-metallb_cidr=10.0.0.0/24                                    # MetalLB CIDR [k8s cluster CIDR] (e.g. 10.10.10.0/24)
+                                                            # if DB don't use cert --> db.ca is empt
 ```
 - 주요 변수의 설명은 다음과 같다.
 
@@ -634,13 +633,13 @@ metallb_cidr=10.0.0.0/24                                    # MetalLB CIDR [k8s 
 |----------|-------------|
 | iaas | Cluster가 구성된 IaaS (aws, openstack) |
 | system_domain | cf-for-k8s의 도메인 |
-| public_ip | LB의 IP(Openstack의 Octavia나 MetalLB 사용 시) |
+| use_lb | LoadBalancer 사용 여부 (사용 안할 시 system_domain을 Cluster Worker의 PublicIP와 연결된 system_domain으로 설정) <br> (e.g. Cluster Worker Floating IP : 3.50.50.50 -> system_domain : 3.50.50.50.nip.io 혹은 연결된 도메인 설정)|
+| public_ip | LoadBalancer의 IP(Openstack의 Octavia 사용 시) |
 | storageclass_name | 사용할 Storageclass (Openstack : cinder-csi, AWS : ebs-sc) |
 | app_registry_kind | Registry 종류 (dockerhub, private) |
 | app_registry_address | app_registry_kind가 private일 경우 Registry 주소 입력 |
 | use_external_blobstore | 외부 블롭스토어(minIO)를 사용할 경우 (true, false)|
 | use_external_db | 외부 데이터베이스(postgres, mysql)를 사용할 경우 (true, false) |
-| use_metallb | Cluster에서 LoadBalancer가 제공되지 않는 경우 MetalLB 설치 (true, false) |
 
 <br>
 
@@ -783,13 +782,23 @@ kpack          kpack-webhook-7b57486ddf-zwfnx                2/2     Running    
 
 <br>
 
-### <div id='3.8'> 3.8. cf-for-k8s 도메인 설정 (넣어야 할까?) ##수정필요
+#### <div id='3.7.1'> ※ AWS 기반 cf-for-k8s 설치 시 LoadBalancer 도메인 연결
+AWS의 LoadBalancer를 사용할 경우 Route53을 이용한 도메인의 연결이 필요하다.
+- AWS LoadBalancer 이름 확인
 
 ```
-
+$ kubectl get svc -n istio-system istio-ingressgateway
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP                                                                    PORT(S)                                                      AGE
+istio-ingressgateway   LoadBalancer   10.233.28.216   a0c35cf15801c4557a9b49b3a97f86ef-1468743017.ap-northeast-2.elb.amazonaws.com   15021:32733/TCP,80:30412/TCP,443:31913/TCP,15443:31820/TCP   2h
 ```
 
-### <div id='3.9'> 3.9. cf-for-k8s 로그인 및 테스트 앱 배포
+- Route53에서 호스팅 영역을 생성한 뒤 라우팅 대상에 LoadBalancer 이름(EXTERNAL-IP)를 입력하고 레코드를 생성한다.
+
+![route53](/assets/route53.PNG)
+
+<br>
+
+### <div id='3.8'> 3.8. cf-for-k8s 로그인 및 테스트 앱 배포
 - 테스트 앱을 배포하여 앱이 정상 배포되는지 확인한다.
 ```
 # 배포 자동 테스트
