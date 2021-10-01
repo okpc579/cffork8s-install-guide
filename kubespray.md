@@ -30,7 +30,7 @@
   3.5. [cf-for-k8s values 생성](#3.5)  
   3.6. [cf-for-k8s 배포 YAML 생성](#3.6)  
   3.7. [cf-for-k8s 설치](#3.7)  
-  　※ [cf-for-k8s 도메인 설정 (넣어야 할까?)](#3.7.1)  
+  　※ [AWS 기반 cf-for-k8s 설치 시 LoadBalancer 도메인 연결](#3.7.1)  
   3.8. [cf-for-k8s 로그인 및 테스트 앱 배포](#3.8)  
 
 ## <div id='1'> 1. 문서 개요
