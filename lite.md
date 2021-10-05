@@ -94,7 +94,7 @@ $ source utils-install.sh
 
 - docker 설치 ## 수정필요
 ```
-
+$ sudo wget -qO- http://get.docker.com/ | sh
 ```
 
 - kubectl 설치## 수정필요
