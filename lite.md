@@ -95,11 +95,19 @@ $ source utils-install.sh
 - docker 설치 ## 수정필요
 ```
 $ sudo wget -qO- http://get.docker.com/ | sh
+$ docker -v
+Docker version 20.10.9, build c2ea9bc
 ```
 
 - kubectl 설치## 수정필요
 ```
-
+$ sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+$ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+$ sudo apt-get update
+$ sudo apt-get install -y kubectl
+$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"22", GitVersion:"v1.22.2", GitCommit:"8b5a19147530eaac9476b0ab82980b4088bbc1b2", GitTreeState:"clean", BuildDate:"2021-09-15T21:38:50Z", GoVersion:"go1.16.8", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 <br>
