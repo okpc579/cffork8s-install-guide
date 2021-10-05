@@ -85,7 +85,7 @@ $ cd ~~~~~~~
 | [kubectl](https://github.com/kubernetes/kubectl) | Kubernetes Cluster를 제어하는 툴 |
 | [bosh cli](https://github.com/cloudfoundry/bosh-cli) | cf-for-k8s에서 사용될 임의의 비밀번호와 certificate를 생성하는 툴 |
 | [cf cli](https://github.com/cloudfoundry/cli) (v7+) | cf-for-k8s와 상호 작용하는 툴 |
-| docker | ##수정필요 |
+| [docker](https://www.docker.com/) | 컨테이너 기반의 가상화 플랫폼 |
 
 - ytt, kapp, bosh cli, cf cli 설치 ## 수정필요
 ```
@@ -128,7 +128,7 @@ kind version 0.10.0
 
 - cluster 생성
 ```
-$ kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.19.1
+$ kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.20.2
 $ kubectl cluster-info --context kind-kind
 Kubernetes control plane is running at https://127.0.0.1:43173
 KubeDNS is running at https://127.0.0.1:43173/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
@@ -148,7 +148,7 @@ minikube version: v1.23.2
 
 - cluster 생성
 ```
-$ minikube start --cpus=6 --memory=8g --kubernetes-version="1.19.1" --driver=docker
+$ minikube start --cpus=6 --memory=8g --kubernetes-version="1.20.2" --driver=docker
   
 $ kubectl cluster-info --context minikube
 Kubernetes control plane is running at https://192.168.49.2:8443
