@@ -245,7 +245,7 @@ kind: Config
 
 - 생성된 YAML파일을 이용하여 cf-for-k8s를 설치한다.
 ```
-$ kapp deploy -a cf -f tmp/cf-for-k8s-rendered.yml -
+$ kapp deploy -a cf -f tmp/cf-for-k8s-rendered.yml -y
 
 ......
 1:56:06AM: ongoing: reconcile job/restart-workloads-for-istio1-8-4 (batch/v1) namespace: cf-workloads
