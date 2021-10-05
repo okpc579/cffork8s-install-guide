@@ -87,19 +87,20 @@ $ cd ~~~~~~~
 | [cf cli](https://github.com/cloudfoundry/cli) (v7+) | cf-for-k8s와 상호 작용하는 툴 |
 | docker | ##수정필요 |
 
-- ytt, kapp, bosh cli, cf cli 설치
+- ytt, kapp, bosh cli, cf cli 설치 ## 수정필요
 ```
-$ source utils-install.sh
+$ source cffork8s-install-script/utils-install.sh
 ```
 
-- docker 설치 ## 수정필요
+- docker 설치
 ```
 $ sudo wget -qO- http://get.docker.com/ | sh
+$ sudo chmod 666 /var/run/docker.sock 
 $ docker -v
 Docker version 20.10.9, build c2ea9bc
 ```
 
-- kubectl 설치## 수정필요
+- kubectl 설치
 ```
 $ sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl
 $ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -121,13 +122,16 @@ Client Version: version.Info{Major:"1", Minor:"22", GitVersion:"v1.22.2", GitCom
 $ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
 $ chmod +x ./kind
 $ sudo mv ./kind /usr/local/bin/kind
-$ kind --version
-kind v0.10.0 go1.15.7 linux/amd64
+$ kind --version 
+kind version 0.10.0
 ```
 
-- cluster 생성 ##수정필요
+- cluster 생성
 ```
 $ kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.19.1
+$ kubectl cluster-info --context kind-kind
+Kubernetes control plane is running at https://127.0.0.1:43173
+KubeDNS is running at https://127.0.0.1:43173/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 ```
 
 <br>
@@ -138,11 +142,18 @@ $ kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1
 ```
 $ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 $ sudo install minikube-linux-amd64 /usr/local/bin/minikube
+$ minikube version
+minikube version: v1.23.2
 ```
 
-- cluster 생성  ## 수정필요
+- cluster 생성
 ```
-$ minikube start --cpus=6 --memory=8g --kubernetes-version="1.19.2" --driver=docker
+$ minikube start --cpus=6 --memory=8g --kubernetes-version="1.19.1" --driver=docker
+  
+$ kubectl cluster-info --context minikube
+Kubernetes control plane is running at https://192.168.49.2:8443
+KubeDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
 ```
 
 <br>
@@ -234,10 +245,18 @@ kind: Config
 
 - 생성된 YAML파일을 이용하여 cf-for-k8s를 설치한다.
 ```
-$ kapp deploy -a cf -f tmp/cf-for-k8s-rendered.yml
+$ kapp deploy -a cf -f tmp/cf-for-k8s-rendered.yml -
+
+......
+1:56:06AM: ongoing: reconcile job/restart-workloads-for-istio1-8-4 (batch/v1) namespace: cf-workloads
+1:56:06AM:  ^ Waiting to complete (1 active, 0 failed, 0 succeeded)
+1:56:06AM:  L ok: waiting on pod/restart-workloads-for-istio1-8-4-4mhd7 (v1) namespace: cf-workloads
+1:56:23AM: ok: reconcile job/restart-workloads-for-istio1-8-4 (batch/v1) namespace: cf-workloads
+1:56:23AM:  ^ Completed
+1:56:23AM: ---- applying complete [305/305 done] ----
+1:56:23AM: ---- waiting complete [305/305 done] ----
 
 Succeeded
-......
 ```
 
 - cf-for-k8s 정상설치 되었는지 샘플앱을 통해 확인한다.
@@ -249,7 +268,7 @@ $ cf create-org test-org
 $ cf create-space test-space -o test-org
 $ cf target -o test-org -s test-space
 
-$ cf push -p ../tests/smoke/assets/test-node-app test-node-app
+$ cf push -p ./tests/smoke/assets/test-node-app test-node-app
 Pushing app test-node-app to org system / space test-space as admin...
 Packaging files to upload...
 Uploading files...
@@ -279,7 +298,7 @@ sidecars:
 instances:       1/1
 memory usage:    1024M
 start command:   node server.js
-  state     since                  cpu    memory   disk     details
+     state     since                  cpu    memory   disk     details
 #0   running   2021-09-30T07:06:01Z   0.0%   0 of 0   0 of 0   
 
 
@@ -287,7 +306,14 @@ $ curl https://test-node-app.apps.$(grep system_domain ./tmp/cf-values.yml | cut
 Hello World
 ```
 
+- (참고) kind cluster 삭제
+```
+$ kind delete cluster
+```
+
 <br>
+  
+
 
 #### <div id='2.5.2'> 2.5.2. minikube
 - Metrics-server를 활성화 한다.
@@ -295,10 +321,10 @@ Hello World
 $ minikube addons enable metrics-server
 ```
 
-- 별도의 터미널에서 LoadBalancer Service 사용을 위한 Minikube 터널링을 한다.
+- LoadBalancer Service 사용을 위한 Minikube 터널링을 한다.
 ```
-# 같은 터미널에서 백그라운드에서 실행가능한지 테스트 예정(다른 명령어로) ## 수정필요
-$ sudo minikube tunnel
+# 터널링 백그라운드 실행
+$ minikube tunnel &>/dev/null &
 ```
 
 
@@ -378,10 +404,16 @@ kind: Config
 
 - 생성된 YAML파일을 이용하여 cf-for-k8s를 설치한다.
 ```
-$ kapp deploy -a cf -f tmp/cf-for-k8s-rendered.yml
+$ kapp deploy -a cf -f tmp/cf-for-k8s-rendered.yml -y
+
+........
+2:40:51AM:  L ok: waiting on pod/restart-workloads-for-istio1-8-4-lllwn (v1) namespace: cf-workloads
+2:41:18AM: ok: reconcile job/restart-workloads-for-istio1-8-4 (batch/v1) namespace: cf-workloads
+2:41:18AM:  ^ Completed
+2:41:18AM: ---- applying complete [296/296 done] ----
+2:41:18AM: ---- waiting complete [296/296 done] ----
 
 Succeeded
-......
 ```
 
 - cf-for-k8s 정상설치 되었는지 샘플앱을 통해 확인한다.
@@ -393,7 +425,7 @@ $ cf create-org test-org
 $ cf create-space test-space -o test-org
 $ cf target -o test-org -s test-space
 
-$ cf push -p ../tests/smoke/assets/test-node-app test-node-app
+$ cf push -p ./tests/smoke/assets/test-node-app test-node-app
 Pushing app test-node-app to org system / space test-space as admin...
 Packaging files to upload...
 Uploading files...
@@ -423,10 +455,22 @@ sidecars:
 instances:       1/1
 memory usage:    1024M
 start command:   node server.js
-  state     since                  cpu    memory   disk     details
-#0   running   2021-09-30T07:06:01Z   0.0%   0 of 0   0 of 0   
+     state     since                  cpu    memory   disk     details
+#0   running   2021-10-05T02:00:08Z   0.0%   0 of 0   0 of 0   
 
 
 $ curl https://test-node-app.apps.$(grep system_domain ./tmp/cf-values.yml | cut -d" " -f2 | sed -e 's/\"//g') -k
 Hello World
 ```
+  
+  
+- (참고) Minikube cluster 삭제
+```
+# minikube tunnel process 종료
+$ kill -9 $(ps -ef | grep "minikube tunnel" | awk '{print $2}' | head -n 1)
+  
+# Minikube cluster 삭제
+$ minikube delete
+```
+
+<br>
