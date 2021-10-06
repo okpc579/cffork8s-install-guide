@@ -58,7 +58,6 @@ cf-for-k8s의 컴포넌트 구성은 다음과 같다.
 cf-for-k8s 공식 문서에서는 Local Kubernetes Cluster 요구 조건을 다음과 같이 권고하고 있다.
 - 최소 4 CPU, 6GB Memory
 - 권장 6-8 CPU, 8-16GB Memory
-- 노드 당 최소 4 CPU, 15GB Memory
 - OCI 호환 레지스트리 제공
 
 <br>
