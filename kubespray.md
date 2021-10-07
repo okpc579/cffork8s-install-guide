@@ -933,7 +933,7 @@ Hello World
   
 #### <div id='3.8.1'> ※ (참고) cf-for-k8s 삭제
 ```
-$ source source delete-cffork8s.sh
+$ source delete-cffork8s.sh
 ```
 
 <br>
