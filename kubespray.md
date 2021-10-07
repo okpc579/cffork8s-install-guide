@@ -32,6 +32,7 @@
   3.7. [cf-for-k8s 설치](#3.7)  
   　※ [AWS 기반 cf-for-k8s 설치 시 LoadBalancer 도메인 연결](#3.7.1)  
   3.8. [cf-for-k8s 로그인 및 테스트 앱 배포](#3.8)  
+    ※ [(참고) cf-for-k8s 삭제](#3.8.1)  
 
 ## <div id='1'> 1. 문서 개요
 ### <div id='1.1'> 1.1. 목적
@@ -653,12 +654,32 @@ $ source deploy-ebs-sc.sh
 ```
 <br>
 
-- variables.yml에 storageclass_name 입력했다면 다음 스크립트를 실행한다.
+    
+- 사용하려는 StorageClass를 확인한다.
+```
+$ kubectl get sc 
+NAME               PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+ebs-sc             ebs.csi.aws.com   Delete          WaitForFirstConsumer   false                  1m
+```
+  
+<br>
+  
+- variables.yml에 storageclass_name 입력했다면 StorageClass의 default 사용을 위해 다음 스크립트를 실행한다.
+    
 ```
 $ source 1.storageclass-config.sh
 storageclass.storage.k8s.io/ebs-sc patched
 ```
 
+<br>
+
+- 사용하려는 StorageClass가 default 설정이 되었는지 확인한다.
+```
+$ kubectl get sc 
+NAME               PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+ebs-sc (default)   ebs.csi.aws.com   Delete          WaitForFirstConsumer   false                  1m
+```
+  
 <br>
 
 ### <div id='3.5'> 3.5. cf-for-k8s values 생성
@@ -907,3 +928,12 @@ $ curl -k https://test-node-app.apps.system.domain
 Hello World
 
 ```
+
+<br>
+  
+#### <div id='3.8.1'> ※ (참고) cf-for-k8s 삭제
+```
+$ source source delete-cffork8s.sh
+```
+
+<br>
