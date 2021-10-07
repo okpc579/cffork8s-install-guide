@@ -339,7 +339,7 @@ ingress_nginx_enabled: false
 
 - enable_nodelocaldns 를 비활성화 한다. (AWS, Openstack 공통)
 ```
-$ vi inventory/mycluster/group_vars/k8s_cluster/addons.yml
+$ vi inventory/mycluster/group_vars/k8s_cluster/k8s-cluster.yml
 ...
 enable_nodelocaldns: false
 ...
