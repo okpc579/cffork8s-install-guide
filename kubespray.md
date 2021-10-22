@@ -855,16 +855,20 @@ Hello World
 
 
 # 배포 수동 테스트
-$ cf login -a https://api.<system_domain> --skip-ssl-validation
-API endpoint: https://api.<system_domain>
-
-Email: admin
-Password:
+$ cf login -a api.$(grep system_domain ./tmp/cf-values.yml | cut -d" " -f2 | sed -e 's/\"//g') --skip-ssl-validation -u admin -p "$(grep cf_admin_password ./tmp/cf-values.yml | cut -d" " -f2)"
 
 Authenticating...
 OK
 
+Targeted org system.
 
+API endpoint:   https://api.<system_domain>
+API version:    3.99.0
+user:           admin
+org:            system
+space:          No space targeted, use 'cf target -s SPACE'
+
+  
 
 $ cf create-space test-space
 Creating space test-space in org system as admin...
