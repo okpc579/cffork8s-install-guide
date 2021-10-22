@@ -863,7 +863,7 @@ OK
 Targeted org system.
 
 API endpoint:   https://api.<system_domain>
-API version:    3.99.0
+API version:    3.104.0
 user:           admin
 org:            system
 space:          No space targeted, use 'cf target -s SPACE'
