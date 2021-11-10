@@ -399,7 +399,7 @@ external_openstack_lbaas_internal_lb: false
 
 - AWS 환경 사용 시 다음 명령어를 통해 Cluster 구성을 진행한다.
 ```
-$ ansible-playbook -i ./inventory/mycluster/inventory.ini ./cluster.yml -e ansible_user=ubuntu -b --become-user=root --flush-cache
+$ ansible-playbook -i ./inventory/mycluster/inventory.ini ./cluster.yml -e -b --become-user=root --flush-cache
 ```
 
 <br>
@@ -523,7 +523,7 @@ Ansible playbook을 이용하여 Kubespray 삭제를 진행한다.
 
 ```
 # AWS 환경 사용 시
-$ ansible-playbook -i ./inventory/mycluster/inventory.ini ./reset.yml -e ansible_user=ubuntu -b --become-user=root --flush-cache
+$ ansible-playbook -i ./inventory/mycluster/inventory.ini ./reset.yml -e -b --become-user=root --flush-cache
 
 # Openstack 환경 사용 시
 $ ansible-playbook -i inventory/mycluster/hosts.yaml  --become --become-user=root reset.yml
